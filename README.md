@@ -1,7 +1,6 @@
 # Gestionale Ore — Nuovo Frontend
 
-Questa è la **nuova area pulita** del progetto Gestionale Ore. Il vecchio progetto (`C:\Users\officina\Desktop\GESTIONALE ORE`) resta esclusivamente come **riferimento** e **non deve essere modificato** da questa fase.
-
+Questa è la **nuova area pulita** del progetto Gestionale Ore.
 ## Obiettivo
 
 Ricostruire il frontend **da zero**, come specificato in `GESTIONALE_ORE_BRIEF_AI_STUDIO.md`. Non è un refactoring del vecchio frontend: è un nuovo frontend indipendente.
