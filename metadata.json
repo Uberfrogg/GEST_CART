@@ -1,0 +1,8 @@
+{
+  "name": "Gestionale Ore",
+  "description": "Frontend per Gestionale Ore aziendale con tracciamento ore, cartellini, clienti, macchine e calendario.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
