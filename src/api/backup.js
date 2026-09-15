@@ -8,6 +8,8 @@ import {
   getAutoBackupConfigState,
   setAutoBackupConfigState,
   DEFAULT_AUTO_BACKUP,
+  getUsersList,
+  setUsersList,
   getClientsList,
   setClientsList,
   getMachinesList,
@@ -102,6 +104,7 @@ export async function exportDatabaseJson() {
     version: '1.0.0',
     exported_at: new Date().toISOString(),
     data: {
+      users: getUsersList(),
       clients: getClientsList(),
       machines: getMachinesList(),
       materials: getMaterialsList(),
@@ -127,6 +130,26 @@ export async function importDatabaseJson(jsonPayload) {
 
   if (!Array.isArray(payloadData.clients) || !Array.isArray(payloadData.cartellini)) {
     throw new Error('Struttura dati non valida: mancano le collezioni principali (clienti o cartellini).');
+  }
+
+  if (Array.isArray(payloadData.users || payloadData.dipendenti)) {
+    const rawUsers = payloadData.users || payloadData.dipendenti;
+    const importedUsers = rawUsers.map((u) => {
+      const nick = (u.nickname || u.username || '').toUpperCase();
+      return {
+        id: u.id || `user-${nick.toLowerCase().replace(/[^a-z0-9]/g, '') || Date.now()}-${Date.now().toString().slice(-4)}`,
+        nickname: nick,
+        username: nick,
+        password: u.password !== undefined && u.password !== null ? String(u.password) : '',
+        ruolo: (u.ruolo || 'DIPENDENTE').toUpperCase(),
+        attivo: u.attivo !== false,
+        eliminato: u.eliminato === true,
+        eliminato_dal: u.eliminato_dal || null,
+        data_eliminazione: u.data_eliminazione || null,
+        creato_il: u.creato_il || null,
+      };
+    });
+    setUsersList(importedUsers);
   }
 
   const newClients = payloadData.clients.map((c) => {
@@ -167,6 +190,7 @@ export async function importDatabaseJson(jsonPayload) {
   return {
     success: true,
     stats: {
+      users: getUsersList().length,
       clients: getClientsList().length,
       machines: getMachinesList().length,
       cartellini: getCartelliniList().length,

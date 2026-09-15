@@ -43,7 +43,13 @@ export async function login(username, password) {
     throw err;
   }
 
-  if (user.password && user.password !== password.trim()) {
+  if (!user.password || user.password.trim() === '') {
+    const err = new Error('Utente privo di password configurata. Impossibile autenticare.');
+    err.code = 'USER_NO_PASSWORD';
+    throw err;
+  }
+
+  if (user.password !== password.trim()) {
     const err = new Error('Password errata');
     err.code = 'INVALID_PASSWORD';
     throw err;

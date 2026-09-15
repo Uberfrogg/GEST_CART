@@ -65,15 +65,25 @@ users = users.map((u) => {
     id: u.id || (base ? base.id : `user-${Date.now()}`),
     nickname: nick,
     username: nick,
+    password: u.password !== undefined && u.password !== null && u.password !== ''
+      ? u.password
+      : (base ? base.password : ''),
     ruolo: (u.ruolo || (base ? base.ruolo : 'DIPENDENTE')).toUpperCase(),
     attivo: u.attivo !== false,
+    eliminato: u.eliminato === true,
+    eliminato_dal: u.eliminato_dal || null,
+    data_eliminazione: u.data_eliminazione || null,
+    creato_il: u.creato_il || (base ? base.creato_il : null),
   };
 });
 
-// Ensure any missing initial users are present
+// Ensure any missing initial users are present and have password restored if blank
 INITIAL_USERS.forEach((initU) => {
-  if (!users.some((u) => u.nickname.toUpperCase() === initU.nickname.toUpperCase())) {
+  const existing = users.find((u) => u.nickname.toUpperCase() === initU.nickname.toUpperCase());
+  if (!existing) {
     users.push({ ...initU });
+  } else if (!existing.password && initU.password) {
+    existing.password = initU.password;
   }
 });
 saveStorage(STORAGE_KEYS.USERS, users);
